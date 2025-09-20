@@ -6,7 +6,7 @@ pipeline {
     }
 
     stages {
-        // Stage 1: Clone the repository...
+        // Stage 1: Clone the repository....
         stage('Clone Repo') {
             steps {
                 echo 'Cloning the repository...'
@@ -14,7 +14,7 @@ pipeline {
             }
         }
 
-        // Stage 2: Install dependencies...
+        // Stage 2: Install dependencies....
         stage('Install Dependencies') {
             steps {
                 echo 'Installing NodeJS packages...'
@@ -22,7 +22,7 @@ pipeline {
             }
         }
 
-        // Stage 3: Deploy the application...
+        // Stage 3: Deploy the application....
         stage('Deploy to Render') {
             steps {
                 echo 'Triggering Render deployment...'
