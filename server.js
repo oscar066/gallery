@@ -8,35 +8,30 @@ const config = require("./_config");
 let index = require("./routes/index");
 let image = require("./routes/image");
 
+// Initializing the app
+const app = express();
+
 // =================================================
 //            DATABASE CONNECTION
 // =================================================
-// This section is what we are updating.
-
-// 1. Get the config file
-const config = require("./_config");
-
-// 2. Get the current environment
-// If NODE_ENV is not set, we'll default to 'development'
+// This is the clean connection logic from the 'test' branch
 const node_env = process.env.NODE_ENV || "development";
-
-// 3. Get the correct database URI from the config file
 const db_url = config.mongoURI[node_env];
 
-// 4. Connect to the database
 mongoose.connect(
   db_url,
   { useNewUrlParser: true, useUnifiedTopology: true },
   (err) => {
-    if (err) console.log(err);
+    if (err) {
+      console.log(err);
+    } else {
+      // Don't log during tests, it clutters the output
+      if (node_env !== "test") {
+        console.log(`Database connected successfully to ${db_url}`);
+      }
+    }
   }
 );
-
-// Test if the database has connected successfully
-let db = mongoose.connection;
-db.once("open", () => {
-  console.log("Database connected successfully");
-});
 
 // View Engine
 app.set("view engine", "ejs");
@@ -50,8 +45,16 @@ app.use(express.json());
 app.use("/", index);
 app.use("/image", image);
 
-// Start the server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is listening at http://localhost:${PORT}`);
-});
+// Start the server (but not when we are testing)
+if (process.env.NODE_ENV !== "test") {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server is listening at http://localhost:${PORT}`);
+  });
+}
+
+// =================================================
+//      EXPORT THE APP FOR TESTING
+// =================================================
+// This is the most important line for the tests to work
+module.exports = app;
