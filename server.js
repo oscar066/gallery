@@ -7,18 +7,32 @@ const path = require('path');
 let index = require('./routes/index');
 let image = require('./routes/image');
 
-// connecting the database
-let mongodb_url = 'mongodb://localhost:27017/';
-let dbName = 'darkroom';
-mongoose.connect(`${mongodb_url}${dbName}`,{ useNewUrlParser: true , useUnifiedTopology: true }, (err)=>{
-    if (err) console.log(err)
+// =================================================
+//            DATABASE CONNECTION
+// =================================================
+// This section is what we are updating.
+
+// 1. Get the config file
+const config = require('./_config');
+
+// 2. Get the current environment
+// If NODE_ENV is not set, we'll default to 'development'
+const node_env = process.env.NODE_ENV || 'development';
+
+// 3. Get the correct database URI from the config file
+const db_url = config.mongoURI[node_env];
+
+// 4. Connect to the database
+mongoose.connect(db_url,{ useNewUrlParser: true , useUnifiedTopology: true }, (err)=>{
+    if (err) console.log(err);
 });
 
-// test if the database has connected successfully
+
+// Test if the database has connected successfully
 let db = mongoose.connection;
 db.once('open', ()=>{
-    console.log('Database connected successfully')
-})
+    console.log('Database connected successfully');
+});
 
 // Initializing the app
 const app = express();
@@ -31,16 +45,15 @@ app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 
 // body parser middleware
-app.use(express.json())
+app.use(express.json());
 
 
 app.use('/', index);
 app.use('/image', image);
 
 
-
- 
+// Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT,() =>{
-    console.log(`Server is listening at http://localhost:${PORT}`)
+    console.log(`Server is listening at http://localhost:${PORT}`);
 });
