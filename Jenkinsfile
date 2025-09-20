@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+        // Slack Webhook URL environment variable
+    environment {
+        SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/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'
+    }
+
     tools {
         nodejs 'node18'
     }
@@ -47,7 +52,17 @@ pipeline {
                 body: "The build failed. Check the Jenkins console for details: ${env.BUILD_URL}"
         }
         success {
-            echo 'Build successful'
+            echo 'Build successful! Sending Slack notification...'
+            //  NEW SLACK NOTIFICATION
+            slackSend(
+                webhookUrl: SLACK_WEBHOOK_URL,
+                channel: '#it-department-collaboration',
+                color: 'good',
+                message: """Deployment Successful!
+                          Build Number: ${env.BUILD_NUMBER}
+                          Project: gallery-pipeline
+                          View the deployed site here: https://gallery-zq8d.onrender.com"""
+            )
         }
     }
 }
