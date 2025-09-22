@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-        // Slack Webhook URL environment variable
-    environment {
-        SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/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'
-    }
-
     tools {
         nodejs 'node18'
     }
@@ -18,7 +13,6 @@ pipeline {
                 git branch: 'master', url: 'https://github.com/oscar066/gallery.git'
             }
         }
-
         // Stage 2: Install dependencies....
         stage('Install Dependencies') {
             steps {
@@ -43,26 +37,29 @@ pipeline {
             }
         }
     }
+
     post {
         failure {
             echo 'Build failed, sending email...'
-            // sending an email if any of the stages fail
+            // sending an email if any of the stages fail  
             mail to: 'oscar.karuga1@student.moringaschool.com',
-                subject: "Build FAILED for gallery-pipeline: Build #${env.BUILD_NUMBER}",
-                body: "The build failed. Check the Jenkins console for details: ${env.BUILD_URL}"
+                 subject: "Build FAILED for gallery-pipeline: Build #${env.BUILD_NUMBER}",
+                 body: "The build failed. Check the Jenkins console for details: ${env.BUILD_URL}"
         }
         success {
             echo 'Build successful! Sending Slack notification...'
             //  NEW SLACK NOTIFICATION
-            slackSend(
-                webhookUrl: SLACK_WEBHOOK_URL,
-                channel: '#it-department-collaboration',
-                color: 'good',
-                message: """Deployment Successful!
-                          Build Number: ${env.BUILD_NUMBER}
-                          Project: gallery-pipeline
-                          View the deployed site here: https://gallery-zq8d.onrender.com"""
-            )
+            withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'SLACK_WEBHOOK_URL')]) {
+                slackSend(
+                    webhookUrl: SLACK_WEBHOOK_URL,
+                    channel: '#it-department-collaboration',
+                    color: 'good',
+                    message: """Deployment Successful!
+                              Build Number: ${env.BUILD_NUMBER}
+                              Project: gallery-pipeline
+                              View the deployed site here: https://gallery-zq8d.onrender.com"""
+                )
+            }
         }
     }
 }
