@@ -49,17 +49,19 @@ pipeline {
         }
         success {
             echo 'Build successful! Sending Slack notification...'
-            //  NEW SLACK NOTIFICATION
-            slackSend(
-                teamDomain: 'oscarip1',  // Your Slack workspace name
-                token: 'slack-webhook-url',  
-                channel: '#Oscar_IP1',
-                color: 'good',
-                message: """Deployment Successful!
-                          Build Number: ${env.BUILD_NUMBER}
-                          Project: gallery-pipeline
-                          View the deployed site here: https://gallery-zq8d.onrender.com"""
-            )
+            // Use a direct curl command to bypass the Slack plugin
+            withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'SLACK_WEBHOOK_URL')]) {
+                sh '''
+                    curl -X POST -H "Content-type: application/json" \
+                    --data "{
+                        \\"channel\\": \\"#Oscar_IP1\\",
+                        \\"username\\": \\"Jenkins CI\\",
+                        \\"text\\": \\"✅ *Deployment Successful!*\\\\n• Build Number: ${BUILD_NUMBER}\\\\n• Project: gallery-pipeline\\\\n• View: https://gallery-zq8d.onrender.com\\",
+                        \\"icon_emoji\\": \\":jenkins:\\"
+                    }" \
+                    "$SLACK_WEBHOOK_URL"
+                '''
+            }
         }
     }
 }
