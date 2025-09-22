@@ -51,7 +51,7 @@ pipeline {
             echo 'Build successful! Sending Slack notification...'
             //  NEW SLACK NOTIFICATION
             slackSend(
-                channel: '#it-department-collaboration',
+                channel: '#Oscar_IP1',
                 color: 'good',
                 message: """Deployment Successful!
                           Build Number: ${env.BUILD_NUMBER}
