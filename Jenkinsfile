@@ -52,7 +52,7 @@ pipeline {
             //  NEW SLACK NOTIFICATION
             slackSend(
                 teamDomain: 'oscarip1',  // Your Slack workspace name
-                token: 'slack-webhook-url',  // Reference to your credential ID
+                token: 'slack-webhook-url',  
                 channel: '#Oscar_IP1',
                 color: 'good',
                 message: """Deployment Successful!
