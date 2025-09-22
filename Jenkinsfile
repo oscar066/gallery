@@ -51,7 +51,6 @@ pipeline {
             echo 'Build successful! Sending Slack notification...'
             //  NEW SLACK NOTIFICATION
             slackSend(
-                tokenCredentialId: 'slack-webhook-url',
                 channel: '#it-department-collaboration',
                 color: 'good',
                 message: """Deployment Successful!
