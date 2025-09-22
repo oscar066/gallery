@@ -51,6 +51,8 @@ pipeline {
             echo 'Build successful! Sending Slack notification...'
             //  NEW SLACK NOTIFICATION
             slackSend(
+                teamDomain: 'oscarip1',  // Your Slack workspace name
+                token: 'slack-webhook-url',  // Reference to your credential ID
                 channel: '#Oscar_IP1',
                 color: 'good',
                 message: """Deployment Successful!
