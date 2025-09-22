@@ -13,6 +13,7 @@ pipeline {
                 git branch: 'master', url: 'https://github.com/oscar066/gallery.git'
             }
         }
+        
         // Stage 2: Install dependencies....
         stage('Install Dependencies') {
             steps {
@@ -51,7 +52,7 @@ pipeline {
             //  NEW SLACK NOTIFICATION
             withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'SLACK_WEBHOOK_URL')]) {
                 slackSend(
-                    webhookUrl: SLACK_WEBHOOK_URL,
+                    baseUrl: SLACK_WEBHOOK_URL,
                     channel: '#it-department-collaboration',
                     color: 'good',
                     message: """Deployment Successful!
