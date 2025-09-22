@@ -4,6 +4,8 @@ This project is a web-based image gallery application built with Node.js and Exp
 
 **Live Application URL:** [https://gallery-zq8d.onrender.com](https://gallery-zq8d.onrender.com)
 
+> **NB:** This application is hosted on Render's free service plan, which causes the web service to "spin down" after 15 minutes of inactivity. The first request to the site may take up to 30 seconds to load while the server restarts. Subsequent requests will be fast.
+
 ---
 
 ## Features
